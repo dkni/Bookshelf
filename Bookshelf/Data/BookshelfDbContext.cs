@@ -5,9 +5,11 @@ namespace Bookshelf.Data
 {
     public class BookshelfDbContext : DbContext
     {
+        // A ctor for context registration in IServiceCollection in Startup.cs.
         public BookshelfDbContext(DbContextOptions options) : base(options) { }
+        public BookshelfDbContext() { }
 
-        DbSet<Book> Books { get; set; }
+        public virtual DbSet<Book> Books { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

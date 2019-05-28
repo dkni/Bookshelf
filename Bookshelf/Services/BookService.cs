@@ -16,7 +16,7 @@ namespace Bookshelf.Services
 
         public IEnumerable<Book> GetBooks()
         {
-            return _context.Set<Book>().ToList();
+            return _context.Books.ToList();
         }
     }
 }
