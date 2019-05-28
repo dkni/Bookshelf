@@ -1,8 +1,11 @@
 ﻿using Bookshelf.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookshelf.Controllers
 {
+    [Authorize]
+    [AutoValidateAntiforgeryToken]
     public class BookController : Controller
     {
         private readonly BookService _service;

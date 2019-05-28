@@ -1,9 +1,10 @@
 ﻿using Bookshelf.Data.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bookshelf.Data
 {
-    public class BookshelfDbContext : DbContext
+    public class BookshelfDbContext : IdentityDbContext<User>
     {
         // A ctor for context registration in IServiceCollection in Startup.cs.
         public BookshelfDbContext(DbContextOptions options) : base(options) { }
@@ -13,6 +14,8 @@ namespace Bookshelf.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Book>().HasData(
                 new Book {
                     Isbn = "978-0684801223",
