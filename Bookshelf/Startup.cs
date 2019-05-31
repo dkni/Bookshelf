@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SimpleInjector;
 using System.Threading.Tasks;
 
 namespace Bookshelf
@@ -17,7 +16,6 @@ namespace Bookshelf
     public class Startup
     {
         private readonly IConfiguration _configuration;
-        private readonly Container _container = new Container();
 
         public Startup(IHostingEnvironment env)
         {
@@ -31,15 +29,13 @@ namespace Bookshelf
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvcCore()
+                .AddJsonFormatters()
+                .AddAuthorization()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddDbContext<BookshelfDbContext>(builder =>
+            services.AddDbContextPool<BookshelfDbContext>(builder =>
                 builder.UseSqlServer(_configuration.GetConnectionString("bookshelf-sqlserver")));
-
-            services.AddSimpleInjector(_container, options =>
-            {
-                options.AddAspNetCore().AddControllerActivation();
-            });
 
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<BookshelfDbContext>()
@@ -61,25 +57,18 @@ namespace Bookshelf
                     }
                 };
             });
+
+            services.AddTransient<IBookService, BookService>();
         }
 
         public void Configure(IApplicationBuilder app)
         {
-            app.UseSimpleInjector(_container);
-            InitializeContainer();
-            _container.Verify();
-
             app.UseHsts();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseAuthentication();
 
             app.UseMvc();
-        }
-
-        private void InitializeContainer()
-        {
-            _container.Register<BookService>(Lifestyle.Scoped);
         }
     }
 }

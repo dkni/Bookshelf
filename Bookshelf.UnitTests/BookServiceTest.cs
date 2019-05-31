@@ -4,6 +4,7 @@ using Bookshelf.Services;
 using Moq;
 using Moq.EntityFrameworkCore;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace Bookshelf.UnitTests
@@ -15,7 +16,7 @@ namespace Bookshelf.UnitTests
         {
             IList<Book> expectedBooks = new List<Book> { new Book(), new Book(), new Book() };
 
-            var dbContextStub = new Mock<BookshelfDbContext>();
+            var dbContextStub = new Mock<BookshelfDbContext>(new DbContextOptionsBuilder().Options);
             dbContextStub.Setup(m => m.Books).ReturnsDbSet(expectedBooks);
 
             var bookService = new BookService(dbContextStub.Object);

@@ -8,7 +8,6 @@ namespace Bookshelf.Data
     {
         // A ctor for context registration in IServiceCollection in Startup.cs.
         public BookshelfDbContext(DbContextOptions options) : base(options) { }
-        public BookshelfDbContext() { }
 
         public virtual DbSet<Book> Books { get; set; }
 

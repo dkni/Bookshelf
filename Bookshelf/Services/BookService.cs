@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Bookshelf.Services
 {
-    public class BookService
+    public class BookService : IBookService
     {
         private readonly BookshelfDbContext _context;
 
