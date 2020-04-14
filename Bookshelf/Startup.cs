@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,7 +16,7 @@ namespace Bookshelf
     {
         private readonly IConfiguration _configuration;
 
-        public Startup(IHostingEnvironment env)
+        public Startup(IWebHostEnvironment env)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
@@ -29,10 +28,7 @@ namespace Bookshelf
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvcCore()
-                .AddJsonFormatters()
-                .AddAuthorization()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddControllers();
 
             services.AddDbContextPool<BookshelfDbContext>(builder =>
                 builder.UseSqlServer(_configuration.GetConnectionString("bookshelf-sqlserver")));
@@ -63,12 +59,19 @@ namespace Bookshelf
 
         public void Configure(IApplicationBuilder app)
         {
-            app.UseHsts();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseAuthentication();
 
-            app.UseMvc();
+            app.UseRouting();
+            app.UseCors();
+            app.UseHsts();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints => {
+                endpoints.MapControllers();
+            }); ;
         }
     }
 }
